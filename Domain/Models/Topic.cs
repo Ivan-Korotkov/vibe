@@ -1,6 +1,6 @@
 ﻿namespace Domain.Models;
 
-public class Topik : Entity<TopicId>
+public class Topic : Entity<TopicId>
 {
     public string Title { get; set; } = default!;
     public DateTime? EventStart { get; set; } = default!;
@@ -8,13 +8,13 @@ public class Topik : Entity<TopicId>
     public string TopicType { get; set; } = default!;
     public Location Location { get; set; } = default!;
 
-    public Topik Create(TopicId id, string title, DateTime eventStart, string summary, string topicType, Location location)
+    public Topic Create(TopicId id, string title, DateTime eventStart, string summary, string topicType, Location location)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(title);
         ArgumentException.ThrowIfNullOrWhiteSpace(summary);
         ArgumentException.ThrowIfNullOrWhiteSpace(topicType);
 
-        var topik = new Topik()
+        var topik = new Topic()
         {
             Id = id,
             Title = title,

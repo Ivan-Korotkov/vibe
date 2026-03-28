@@ -1,6 +1,6 @@
 ﻿namespace Domain.Abstractions;
 
-interface IEntity<T>: IEntity
+public interface IEntity<T>: IEntity
 {
     public T Id { get; set; }
 }
