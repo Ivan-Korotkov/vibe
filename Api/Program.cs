@@ -1,4 +1,5 @@
 using Infrastructure.Data.DataBaseContext;
+using Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 var app = builder.Build();
+
+if( app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    await app.InitializeDatabaseAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
