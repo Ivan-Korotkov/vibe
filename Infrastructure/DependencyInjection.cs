@@ -1,4 +1,6 @@
-﻿using Infrastructure.Data.DataBaseContext;
+﻿using Application.Data.DataBaseContext;
+using Application.Topics;
+using Infrastructure.Data.DataBaseContext;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +20,8 @@ public static class DependencyInjection
         {
             options.UseSqlite(connectionString);
         });
+
+        services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
         return services;
     }
