@@ -1,9 +1,6 @@
-﻿using Domain.Models;
-using Microsoft.EntityFrameworkCore;
-
-namespace Application.Data.DataBaseContext;
+﻿namespace Application.Data.DataBaseContext;
 
 public interface IApplicationDbContext
 {
-    DbSet<Topic> Topics { get; set; }
+    DbSet<Topic> Topics { get; }
 }

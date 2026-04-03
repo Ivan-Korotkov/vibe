@@ -1,38 +1,16 @@
-using Infrastructure.Data.DataBaseContext;
-using Infrastructure.Extensions;
-using Microsoft.EntityFrameworkCore;
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseSqlite(builder.Configuration.GetConnectionString("SqLiteConnection"));
-});
+builder.Services
+    .AddApiSrvices(builder.Configuration)
+    .AddInfrastructureSrvices(builder.Configuration);
 
 var app = builder.Build();
 
-if( app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
     await app.InitializeDatabaseAsync();
 }
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
+app.UseApiServices();
 
 app.Run();

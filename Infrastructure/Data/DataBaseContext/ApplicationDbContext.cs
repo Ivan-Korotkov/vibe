@@ -1,31 +1,23 @@
-﻿using Domain.Models;
-using Domain.ValueObjects;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using Application.Data.DataBaseContext;
 
 namespace Infrastructure.Data.DataBaseContext;
 
-public class ApplicationDbContext: DbContext
+public class ApplicationDbContext: DbContext, IApplicationDbContext
 {
     public DbSet<Topic> Topics => Set<Topic>();
-    public ApplicationDbContext(DbContextOptions options) : base(options)
+
+    public ApplicationDbContext(DbContextOptions options) 
+        : base(options)
     {
          
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Topic>()
-            .Property(t => t.Id)
-            .HasConversion(
-                id => id.Value,
-                value => TopicId.Of(value)
-            );
+        base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Topic>()
-            .OwnsOne(topic => topic.Location, location =>
-            {
-                location.Property(l => l.City).HasColumnName("City");
-                location.Property(l => l.Street).HasColumnName("Street");
-            });
+        modelBuilder.ApplyConfigurationsFromAssembly(
+            Assembly.GetExecutingAssembly()
+        );
     }
 }
