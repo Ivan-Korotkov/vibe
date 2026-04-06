@@ -1,5 +1,5 @@
+using Application.Dto;
 using Application.Topics;
-using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -10,8 +10,14 @@ public class TopicsController(ITopicsService topicsService)
     : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<Topic>>> GetTopics(CancellationToken ct)
+    public async Task<ActionResult<List<TopicResponseDto>>> GetTopics(CancellationToken ct)
     {
         return Ok(await topicsService.GetTopicsAsync(ct));
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<TopicResponseDto>> GetTopic(Guid id, CancellationToken ct)
+    {
+        return Ok(await topicsService.GetTopicAsync(id, ct));
     }
 }

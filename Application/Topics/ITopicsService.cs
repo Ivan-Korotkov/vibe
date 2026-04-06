@@ -1,12 +1,10 @@
-﻿using Domain.ValueObjects;
-
-namespace Application.Topics;
+﻿namespace Application.Topics;
 
 public interface ITopicsService
 {
-    Task<List<Topic>> GetTopicsAsync(CancellationToken ct);
-    Task<Topic> GetTopicAsync(Guid id, CancellationToken ct);
-    Task<Topic> CreateTopicAsync(Topic topicRequestDto, CancellationToken ct);
-    Task<Topic> UpdateTopicAsync(Guid id, Topic topicRequestDto, CancellationToken ct);
+    Task<List<TopicResponseDto>> GetTopicsAsync(CancellationToken ct);
+    Task<TopicResponseDto> GetTopicAsync(Guid id, CancellationToken ct);
+    Task<TopicResponseDto> CreateTopicAsync(CreateTopicDto topicRequestDto, CancellationToken ct);
+    Task<TopicResponseDto> UpdateTopicAsync(Guid id, UpdateTopicDto topicRequestDto, CancellationToken ct);
     Task DeleteTopicAsync(Guid id, CancellationToken ct);
 }
