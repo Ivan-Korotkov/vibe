@@ -7,31 +7,38 @@ namespace Application.Topics;
 public class TopicsService(IApplicationDbContext dbContext, 
     ILogger<TopicsService> logger) : ITopicsService
 {
-    public Task<Topic> CreateTopicAsync(Topic topicRequestDto)
+    public Task<Topic> CreateTopicAsync(Topic topicRequestDto, CancellationToken ct)
     {
         throw new NotImplementedException();
     }
 
-    public Task DeleteTopicAsync(TopicId id)
+    public Task DeleteTopicAsync(Guid id, CancellationToken ct)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Topic> GetTopicAsync(Guid id)
+    public Task<Topic> GetTopicAsync(Guid id, CancellationToken ct)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<List<Topic>> GetTopicsAsync()
+    public async Task<List<Topic>> GetTopicsAsync(CancellationToken ct)
     {
-        var topics = await dbContext.Topics
-            .AsNoTracking()
-            .ToListAsync();
-
-        return topics;
+        try
+        {
+            var topics = await dbContext.Topics
+                .AsNoTracking()
+                .ToListAsync(ct);
+            return topics;
+        }
+        catch (Exception ex) 
+        {
+            logger.LogInformation($"Произошла ошибка при вызове GetTopicsAsync: {ex.Message}");
+            return new List<Topic>();
+        }
     }
 
-    public Task<Topic> UpdateTopicAsync(TopicId id, Topic topicRequestDto)
+    public Task<Topic> UpdateTopicAsync(Guid id, Topic topicRequestDto, CancellationToken ct)
     {
         throw new NotImplementedException();
     }
