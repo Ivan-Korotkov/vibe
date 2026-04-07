@@ -1,6 +1,4 @@
-﻿using Infrastructure.Data.DataBaseContext;
-using Infrastructure.Data.Extensions;
-using Microsoft.EntityFrameworkCore;
+﻿using Api.Exceptions.Handler;
 
 namespace Api;
 
@@ -10,6 +8,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddExceptionHandler<CustomExceptionHandler>();
         services.AddControllers();
         services.AddOpenApi();
 
@@ -23,7 +22,8 @@ public static class DependencyInjection
         {
             app.MapOpenApi();
         }
-
+        app.UseExceptionHandler(options => { });
+        
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
