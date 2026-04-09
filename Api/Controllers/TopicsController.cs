@@ -26,4 +26,19 @@ public class TopicsController(ITopicsService topicsService)
     {
         return Ok(await topicsService.CreateTopicAsync(dto, ct));
     }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<TopicResponseDto>> UpdateTopic(Guid id, [FromBody] UpdateTopicDto dto, CancellationToken ct)
+    {
+        return Ok(await topicsService.UpdateTopicAsync(id, dto, ct));
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<TopicResponseDto>> DeleteTopic(Guid id, CancellationToken ct)
+    {
+        await topicsService.DeleteTopicAsync(id, ct);
+
+        return NoContent();
+
+    }
 }

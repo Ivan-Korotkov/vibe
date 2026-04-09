@@ -2,6 +2,7 @@
 using Application.Exceptions;
 using Application.Extensions;
 using Domain.ValueObjects;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Topics;
@@ -34,9 +35,17 @@ public class TopicsService(IApplicationDbContext dbContext,
         }
     }
 
-    public Task DeleteTopicAsync(Guid id, CancellationToken ct)
+    public async Task DeleteTopicAsync(Guid id, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var topicID = TopicId.Of(id);
+        var topic = await dbContext.Topics.FindAsync([topicID]);
+
+        if (topic is null)
+        {
+            throw new TopicNotFoundException(id);
+        }
+        dbContext.Topics.Remove(topic);
+        await dbContext.SaveChangesAsync(ct);
     }
 
     public async Task<TopicResponseDto> GetTopicAsync(Guid id, CancellationToken ct)
@@ -77,8 +86,31 @@ public class TopicsService(IApplicationDbContext dbContext,
         }
     }
 
-    public Task<TopicResponseDto> UpdateTopicAsync(Guid id, UpdateTopicDto dto, CancellationToken ct)
+    public async Task<TopicResponseDto> UpdateTopicAsync(Guid id, UpdateTopicDto dto, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var topicID = TopicId.Of(id);
+            var topic = await dbContext.Topics.FindAsync([topicID]);
+
+            if (topic is null)
+            {
+                throw new TopicNotFoundException(id);
+            }
+
+            topic.Title = dto.Title ?? topic.Title;
+            topic.TopicType = dto.TopicType;
+            topic.Summary = dto.Summary;
+            topic.EventStart = dto.EventStart;
+            topic.Location = Location.Of(dto.Location.City, dto.Location.Street);
+
+            await dbContext.SaveChangesAsync(ct);
+            return topic.ToTopicResponseDto();
+        }
+        catch (Exception ex)
+        {
+            logger.LogInformation($"Произошла ошибка при вызове UpdateTopicAsync: {ex.Message}");
+            throw;
+        }
     }
 }
