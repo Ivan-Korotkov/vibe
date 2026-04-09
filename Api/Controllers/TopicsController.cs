@@ -20,4 +20,10 @@ public class TopicsController(ITopicsService topicsService)
     {
         return Ok(await topicsService.GetTopicAsync(id, ct));
     }
+
+    [HttpPost]
+    public async Task<ActionResult<TopicResponseDto>> CreateTopic(CreateTopicDto dto, CancellationToken ct)
+    {
+        return Ok(await topicsService.CreateTopicAsync(dto, ct));
+    }
 }

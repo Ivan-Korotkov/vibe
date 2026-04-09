@@ -9,9 +9,29 @@ namespace Application.Topics;
 public class TopicsService(IApplicationDbContext dbContext, 
     ILogger<TopicsService> logger) : ITopicsService
 {
-    public Task<TopicResponseDto> CreateTopicAsync(CreateTopicDto topicRequestDto, CancellationToken ct)
+    public async Task<TopicResponseDto> CreateTopicAsync(CreateTopicDto dto, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        try
+        {
+            Topic newTopic = Topic.Create(
+                TopicId.Of(Guid.NewGuid()),
+                dto.Title,
+                dto.EventStart,
+                dto.Summary,
+                dto.TopicType,
+                Location.Of(dto.Location.City, dto.Location.Street)
+            );
+
+            dbContext.Topics.Add(newTopic);
+            await dbContext.SaveChangesAsync(ct);
+
+            return newTopic.ToTopicResponseDto();
+        }
+        catch (Exception ex) 
+        {
+            logger.LogInformation($"Произошла ошибка при вызове CreateTopicAsync: {ex.Message}");
+            throw;
+        }
     }
 
     public Task DeleteTopicAsync(Guid id, CancellationToken ct)
@@ -57,7 +77,7 @@ public class TopicsService(IApplicationDbContext dbContext,
         }
     }
 
-    public Task<TopicResponseDto> UpdateTopicAsync(Guid id, UpdateTopicDto topicRequestDto, CancellationToken ct)
+    public Task<TopicResponseDto> UpdateTopicAsync(Guid id, UpdateTopicDto dto, CancellationToken ct)
     {
         throw new NotImplementedException();
     }
