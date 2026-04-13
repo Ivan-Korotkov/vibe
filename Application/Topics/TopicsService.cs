@@ -2,7 +2,6 @@
 using Application.Exceptions;
 using Application.Extensions;
 using Domain.ValueObjects;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Topics;

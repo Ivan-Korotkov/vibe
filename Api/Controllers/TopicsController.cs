@@ -1,5 +1,3 @@
-using Application.Dto;
-using Application.Topics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
