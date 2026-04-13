@@ -37,15 +37,26 @@ public class TopicsService(IApplicationDbContext dbContext,
 
     public async Task DeleteTopicAsync(Guid id, CancellationToken ct)
     {
-        var topicID = TopicId.Of(id);
-        var topic = await dbContext.Topics.FindAsync([topicID]);
-
-        if (topic is null)
+        try
         {
-            throw new TopicNotFoundException(id);
+            var topicID = TopicId.Of(id);
+            var topic = await dbContext.Topics.FindAsync([topicID]);
+
+            if (topic is null || topic.IsDeleted)
+            {
+                throw new TopicNotFoundException(id);
+            }
+
+            topic.IsDeleted = true;
+            topic.DeletedAt = DateTime.UtcNow;
+
+            await dbContext.SaveChangesAsync(ct);
         }
-        dbContext.Topics.Remove(topic);
-        await dbContext.SaveChangesAsync(ct);
+        catch (Exception ex)
+        {
+            logger.LogInformation($"Произошла ошибка при вызове DeleteTopicAsync: {ex.Message}");
+            throw;
+        }
     }
 
     public async Task<TopicResponseDto> GetTopicAsync(Guid id, CancellationToken ct)
@@ -54,7 +65,7 @@ public class TopicsService(IApplicationDbContext dbContext,
         {
             var topicID = TopicId.Of(id);
             var topic = await dbContext.Topics
-                .FirstOrDefaultAsync(t => t.Id == topicID, ct);
+                .FirstOrDefaultAsync(t => t.Id == topicID && !t.IsDeleted, ct);
 
             if (topic is null)
             {
@@ -76,6 +87,7 @@ public class TopicsService(IApplicationDbContext dbContext,
         {
             var topics = await dbContext.Topics
                 .AsNoTracking()
+                .Where(t => !t.IsDeleted)
                 .ToListAsync(ct);
             return topics.ToTopicResponseDtoList();
         }
@@ -93,7 +105,7 @@ public class TopicsService(IApplicationDbContext dbContext,
             var topicID = TopicId.Of(id);
             var topic = await dbContext.Topics.FindAsync([topicID]);
 
-            if (topic is null)
+            if (topic is null || topic.IsDeleted)
             {
                 throw new TopicNotFoundException(id);
             }
