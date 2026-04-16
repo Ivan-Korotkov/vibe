@@ -22,6 +22,8 @@ public static class DependencyInjection
             });
         });
 
+        services.AddMediatR( config => config
+            .RegisterServicesFromAssembly(typeof(GetTopicsHandler).Assembly));
         return services;
     }
 
