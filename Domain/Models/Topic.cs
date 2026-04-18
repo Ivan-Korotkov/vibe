@@ -1,4 +1,6 @@
-﻿namespace Domain.Models;
+﻿using Domain.ValueObjects;
+
+namespace Domain.Models;
 
 public class Topic : Entity<TopicId>
 {
@@ -24,5 +26,15 @@ public class Topic : Entity<TopicId>
             Location = location
         };
         return topik;
+    }
+
+    public void Update(string title, string topicType, string summary, 
+        DateTime eventStart, string city, string street)
+    {
+        Title = title ?? Title;
+        TopicType = topicType;
+        Summary = summary;
+        EventStart = eventStart;
+        Location = Location.Of(city, street);
     }
 }

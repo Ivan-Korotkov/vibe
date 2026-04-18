@@ -20,19 +20,20 @@ public class TopicsController(IMediator mediator)
     [HttpPost]
     public async Task<IResult> CreateTopic(CreateTopicDto dto, CancellationToken ct)
     {
-        return Results.Ok(null);
+        var response = await mediator.Send(new CreateTopicCommand(dto, ct));
+        return Results.Created($"/topics/{response.Result.Id}", response.Result);
     }
 
     [HttpPut("{id}")]
     public async Task<IResult> UpdateTopic(Guid id, [FromBody] UpdateTopicDto dto, CancellationToken ct)
     {
-        return Results.Ok(null);
+        var response = await mediator.Send(new UpdateTopicCommand(id, dto, ct));
+        return Results.Ok(response.Result);
     }
 
     [HttpDelete("{id}")]
     public async Task<IResult> DeleteTopic(Guid id, CancellationToken ct)
     {
-        return Results.NoContent();
-
+        return Results.Ok(await mediator.Send(new DeleteTopicCommand(id, ct)));
     }
 }

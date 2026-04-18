@@ -7,7 +7,7 @@ public class GetTopicHandler(IApplicationDbContext dbContext, ILogger<GetTopicHa
     {
         try
         {
-            var topicID = TopicId.Of(request.id);
+            var topicID = TopicId.Of(request.Id);
             var topic = await dbContext.Topics
                 .AsNoTracking()
                 .Where(t => !t.IsDeleted && t.Id == topicID)
@@ -15,7 +15,7 @@ public class GetTopicHandler(IApplicationDbContext dbContext, ILogger<GetTopicHa
 
             if (topic is null)
             {
-                throw new TopicNotFoundException(request.id);
+                throw new TopicNotFoundException(request.Id);
             }
 
             return new GetTopicResult(topic.ToTopicResponseDto());
