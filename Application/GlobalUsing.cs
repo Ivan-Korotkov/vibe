@@ -9,5 +9,4 @@ global using Shared.CQRS;
 global using Application.Exceptions;
 global using Domain.ValueObjects;
 global using Microsoft.Extensions.Logging;
-
-global using MediatR;
+global using AutoMapper;

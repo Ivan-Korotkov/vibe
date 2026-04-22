@@ -11,4 +11,5 @@ global using Application.Topics.Commands.DeleteTopic;
 global using Application.Topics.Commands.UpdateTopic;
 global using MediatR;
 global using Microsoft.AspNetCore.Mvc;
+global using Application.Mapping;
 

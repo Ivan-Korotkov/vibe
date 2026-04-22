@@ -1,23 +1,18 @@
 ﻿namespace Application.Topics.Commands.CreateTopic;
 
-public class CreateTopicHandler(IApplicationDbContext dbContext, ILogger<CreateTopicHandler> logger) 
+public class CreateTopicHandler(
+    IApplicationDbContext dbContext, 
+    ILogger<CreateTopicHandler> logger, 
+    IMapper mapper) 
     : ICommandHandler<CreateTopicCommand, CreateTopicResult>
 {
     public async Task<CreateTopicResult> Handle(CreateTopicCommand request, CancellationToken ct)
     {
         try
         {
-            var dto = request.Dto;
-            Topic newTopic = Topic.Create(
-                TopicId.Of(Guid.NewGuid()),
-                dto.Title,
-                dto.EventStart,
-                dto.Summary,
-                dto.TopicType,
-                Location.Of(dto.Location.City, dto.Location.Street)
-            );
-
+            Topic newTopic = mapper.Map<Topic>(request.Dto);
             dbContext.Topics.Add(newTopic);
+
             await dbContext.SaveChangesAsync(ct);
             return new CreateTopicResult(newTopic.ToTopicResponseDto());
         }
