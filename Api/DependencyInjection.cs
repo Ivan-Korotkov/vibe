@@ -1,4 +1,5 @@
 ﻿using Api.Exceptions.Handler;
+using Api.Security.Extensions;
 
 namespace Api;
 
@@ -26,6 +27,8 @@ public static class DependencyInjection
             .RegisterServicesFromAssembly(typeof(GetTopicsHandler).Assembly));
 
         services.AddAutoMapper(typeof(MappingProfile).Assembly);
+
+        services.AddIdentityServices(configuration);
 
         return services;
     }
